@@ -25,7 +25,7 @@ HYFileManager一个基于NSFileManager的文件操作类，它提供一系列的
 
 #### CocoaPods:
 
-`pod 'FCFileManager'`
+`pod 'HYFileManager'`
 
 #### 下载HYFileManager:
 
