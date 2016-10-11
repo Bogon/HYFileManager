@@ -27,11 +27,11 @@ See [HYFileManager.h](https://github.com/castial/HYFileManager/HYFileManager/HYF
 
 #### CocoaPods:
 
-`pod 'FCFileManager'`
+`pod 'HYFileManager'`
 
 #### Manual install:
 
-Copy `FCFileManager.h` and `FCFileManager.m` to your project.
+Copy `HYFileManager.h` and `HYFileManager.m` to your project.
 
 ### Usage examples
 
