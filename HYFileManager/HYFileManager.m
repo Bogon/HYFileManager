@@ -139,7 +139,7 @@
 }
 
 + (BOOL)createFileAtPath:(NSString *)path content:(NSObject *)content overwrite:(BOOL)overwrite {
-    return [self createFileAtPath:path content:content overwrite:overwrite];
+    return [self createFileAtPath:path content:content overwrite:overwrite error:nil];
 }
 
 + (BOOL)createFileAtPath:(NSString *)path content:(NSObject *)content overwrite:(BOOL)overwrite error:(NSError *__autoreleasing *)error {
@@ -192,7 +192,7 @@
 
 + (BOOL)clearCachesDirectory {
     NSArray *subFiles = [self listFilesInCachesDirectoryByDeep:NO];
-    BOOL isSuccess = YES;
+    BOOL isSuccess;
     
     for (NSString *file in subFiles) {
         NSString *absolutePath = [[self cachesDir] stringByAppendingPathComponent:file];
@@ -203,7 +203,7 @@
 
 + (BOOL)clearTmpDirectory {
     NSArray *subFiles = [self listFilesInTmpDirectoryByDeep:NO];
-    BOOL isSuccess = YES;
+    BOOL isSuccess;
     
     for (NSString *file in subFiles) {
         NSString *absolutePath = [[self tmpDir] stringByAppendingPathComponent:file];
@@ -378,16 +378,17 @@
 
 + (NSNumber *)sizeOfDirectoryAtPath:(NSString *)path error:(NSError *__autoreleasing *)error {
     if ([self isDirectoryAtPath:path error:error]) {
-        NSNumber *size = [self sizeOfItemAtPath:path error:error];
-        double sizeValue = [size doubleValue];
-        
         NSArray *subPaths = [self listFilesInDirectoryAtPath:path deep:YES];
-        for (NSUInteger i = 0; i < subPaths.count; i++) {
-            NSString *subPath = [subPaths objectAtIndex:i];
-            NSNumber *subPathSize = [self sizeOfItemAtPath:subPath error:error];
-            sizeValue += [subPathSize doubleValue];
+        NSEnumerator *contentsEnumurator = [subPaths objectEnumerator];
+        
+        NSString *file;
+        unsigned long long int folderSize = 0;
+        
+        while (file = [contentsEnumurator nextObject]) {
+            NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[path stringByAppendingPathComponent:file] error:nil];
+            folderSize += [[fileAttributes objectForKey:NSFileSize] intValue];
         }
-        return [NSNumber numberWithDouble:sizeValue];
+        return [NSNumber numberWithUnsignedLongLong:folderSize];
     }
     return nil;
 }
@@ -398,7 +399,7 @@
 
 + (NSString *)sizeFormattedOfItemAtPath:(NSString *)path error:(NSError *__autoreleasing *)error {
     NSNumber *size = [self sizeOfItemAtPath:path error:error];
-    if (!size) {
+    if (size) {
         return [self sizeFormatted:size];
     }
     return nil;
@@ -410,7 +411,7 @@
 
 + (NSString *)sizeFormattedOfFileAtPath:(NSString *)path error:(NSError *__autoreleasing *)error {
     NSNumber *size = [self sizeOfFileAtPath:path error:error];
-    if (!size) {
+    if (size) {
         return [self sizeFormatted:size];
     }
     return nil;
@@ -422,7 +423,7 @@
 
 + (NSString *)sizeFormattedOfDirectoryAtPath:(NSString *)path error:(NSError *__autoreleasing *)error {
     NSNumber *size = [self sizeOfDirectoryAtPath:path error:error];
-    if (!size) {
+    if (size) {
         return [self sizeFormatted:size];
     }
     return nil;
@@ -478,20 +479,7 @@
 }
 
 +(NSString *)sizeFormatted:(NSNumber *)size {
-    double convertedValue = [size doubleValue];
-    int multiplyFactor = 0;
-    
-    NSArray *tokens = @[@"bytes", @"KB", @"MB", @"GB", @"TB"];
-    
-    while(convertedValue > 1024){
-        convertedValue /= 1024;
-        
-        multiplyFactor++;
-    }
-    
-    NSString *sizeFormat = ((multiplyFactor > 1) ? @"%4.2f %@" : @"%4.0f %@");
-    
-    return [NSString stringWithFormat:sizeFormat, convertedValue, tokens[multiplyFactor]];
+    return [NSByteCountFormatter stringFromByteCount:[size unsignedLongLongValue] countStyle:NSByteCountFormatterCountStyleFile];
 }
 
 @end
