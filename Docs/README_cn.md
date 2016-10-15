@@ -19,7 +19,7 @@ HYFileManager一个基于NSFileManager的文件操作类，它提供一系列的
 - 获取文件(夹)的大小，提供两种返回方式，NSNumber和NSString，方便开发使用；
 - 写入文件内容，支持基本数据类型、NSData、UIImage和NSCoding类型。
 
-查看 [HYFileManager.h](https://github.com/castial/HYFileManager/HYFileManager/HYFileManager.h)，获取方法详细介绍。
+查看 [HYFileManager.h](https://github.com/castial/HYFileManager/blob/master/HYFileManager/HYFileManager.h)，获取方法详细介绍。
 
 ### 安装
 
