@@ -21,7 +21,7 @@ HYFileManager is a simple tool of iOS file operations base on NSFileManager. It 
 - Get file size，include folder size, and provide two ways to return;
 - Write to the file contents, support for basic data types, NSData, UIImage and NSCoding.
 
-See [HYFileManager.h](https://github.com/castial/HYFileManager/HYFileManager/HYFileManager.h), and get detailed methodology description.
+See [HYFileManager.h](https://github.com/castial/HYFileManager/blob/master/HYFileManager/HYFileManager.h), and get detailed methodology description.
 
 ### Installation
 
